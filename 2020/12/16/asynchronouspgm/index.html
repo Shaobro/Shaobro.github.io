@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-16x16-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="../css/theme-pace.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shaobro.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言众所周知,Javascript语言的执行环境是”单线程”(single thread)。 所谓”单线程”,就是指一次只能完成一件任务。如果有多个任务，就必须依次排队，前面的任务执行完成再执行后一个任务，以此类推。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javascript异步编程">
+<meta property="og:url" content="https://shaobro.github.io/2020/12/16/asynchronouspgm/index.html">
+<meta property="og:site_name" content="别林小筑">
+<meta property="og:description" content="前言众所周知,Javascript语言的执行环境是”单线程”(single thread)。 所谓”单线程”,就是指一次只能完成一件任务。如果有多个任务，就必须依次排队，前面的任务执行完成再执行后一个任务，以此类推。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shaobro.github.io/2020/12/16/asynchronouspgm/page_bg_01.jpg">
+<meta property="article:published_time" content="2020-12-16T08:58:11.000Z">
+<meta property="article:modified_time" content="2020-12-16T10:26:41.288Z">
+<meta property="article:author" content="蓝眸">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shaobro.github.io/2020/12/16/asynchronouspgm/page_bg_01.jpg">
+
+<link rel="canonical" href="https://shaobro.github.io/2020/12/16/asynchronouspgm/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Javascript异步编程 | 别林小筑</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+
+    <header class="header header-view" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-cont"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">别林小筑</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">web前端</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-首页">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i><span>首页</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i><span>Tags</span></a>
+
+  </li>
+        <li class="menu-item menu-item-列表">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i><span>列表</span></a>
+
+  </li>
+        <li class="menu-item menu-item-关于博主">
+
+    <a href="/intro" rel="section"><i class="fa fa-archive fa-fw"></i><span>关于博主</span></a>
+
+  </li>
+        <li class="menu-item menu-item-友情链接">
+
+    <a href="/friend" rel="section"><i class="fa fa-archive fa-fw"></i><span>友情链接</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+<div class="header-weather">
+    <div class="header-weather-cont">
+       <iframe width="350" scrolling="no" height="70" frameborder="0" allowtransparency="true" src="https://i.tianqi.com?c=code&id=37&icon=4&site=12" style="color:#555;"></iframe>
+    </div>
+</div>
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shaobro.github.io/2020/12/16/asynchronouspgm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/laji02.png">
+      <meta itemprop="name" content="蓝眸">
+      <meta itemprop="description" content="欢迎来到林中小筑小憩，本站收录一些我在开发时收集的一些笔记和我对前端技术认知和见解。如有不对之处，还望不吝赐教。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="别林小筑">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Javascript异步编程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-12-16 16:58:11 / Modified: 18:26:41" itemprop="dateCreated datePublished" datetime="2020-12-16T16:58:11+08:00">2020-12-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>众所周知,Javascript语言的执行环境是”单线程”(single thread)。</p>
+<p>所谓”单线程”,就是指一次只能完成一件任务。如果有多个任务，就必须依次排队，前面的任务执行完成再执行后一个任务，以此类推。</p>
+<p><img src="/2020/12/16/asynchronouspgm/page_bg_01.jpg" alt="Background" title="异步"></p>
+<a id="more"></a>
+
+<p>&#8194;&#8194;这种模式的好处是实现起来较为简单，执行环境相对单纯。坏处是只要一个任务耗时很长，后面的任务都必须排队等着，会拖累整个程序的执行。常见的浏览器无响应(假死)，往往就是因为某一段Javascript代码长时间运行(比如死循环),导致整个页面卡在这个地方，导致其它任务无法执行。</p>
+<p>为了解决这个问题，Javascript语言将任务的执行模式分为两种: 同步(Synchronous)和异步(Asynchronous)。</p>
+<p>&#8194;&#8194;”同步模式”就是上一段的模式，后一个任务等待前一个任务执行完成再执行，程序的执行顺序与任务的排列顺序是一致的、同步的; “异步模式”则完全不同,每一个任务有一个或多个回调函数(callback),前一个任务执行结束后，不是执行后一个任务，而是执行回调函数，后一个任务是不等前一个任务结束就执行，所以程序的执行顺序与任务的排列顺序是不一致的、异步的。</p>
+<p>&#8194;&#8194;”异步模式”非常重要，在浏览器端，耗时很长的操作都应该异步执行，避免浏览器失去响应，最好的例子就是Ajax操作。在服务器端，”异步模式”甚至是唯一的模式，因为执行环境是单线程的，如果允许同步执行所有的http请求，服务器的性能会急剧下降，很快就会失去响应。</p>
+<h3 id="“异步编程”的几种方法"><a href="#“异步编程”的几种方法" class="headerlink" title="“异步编程”的几种方法:"></a>“异步编程”的几种方法:</h3><h5 id="Number-one-回调函数"><a href="#Number-one-回调函数" class="headerlink" title="Number one 回调函数"></a>Number one 回调函数</h5><p>&#8194;&#8194;这是异步编程最基本的方法。</p>
+<p>假设有两个函数 f1和f2，后者等待前者的执行结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f1();</span><br><span class="line">f2();</span><br></pre></td></tr></table></figure>
+<p>如果f1是一个耗时的任务，可以考虑改写f1,把f2写成f1的回调函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function(callback)&#123;</span><br><span class="line">    setTimeout(function()&#123;</span><br><span class="line">        &#x2F;&#x2F;f1函数的执行语句</span><br><span class="line">        callback();</span><br><span class="line">    &#125;,2000);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行代码就变成了这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1(f2);</span><br></pre></td></tr></table></figure>
+<p>采用这种方式，我们把同步操作变成了异步操作，f1不会堵塞程序运行，相当于先执行程序的主要逻辑，将耗时的操作推迟执行。</p>
+<p>&#8194;&#8194;回调函数的优点是简单、容易理解和部署，缺点是不利于代码的阅读和维护，各个部分之间高度耦合(Coupling),流程会很混乱,而且每个任务只能指定一个回调函数。</p>
+<h5 id="Number-two-事件监听"><a href="#Number-two-事件监听" class="headerlink" title="Number two 事件监听"></a>Number two 事件监听</h5><p>另一种思路是采用事件驱动模式，任务的执行不取决于代码的顺序，而是由某个事件是否发生而决定。</p>
+<p>首先，为f1绑一个事件这里采用<a target="_blank" rel="noopener" href="https://www.runoob.com/jquery/jquery-tutorial.html">JQuery</a>的写法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1.on(&#39;done&#39;,f2);</span><br></pre></td></tr></table></figure>
+<p>上面这段代码的意思是:当f1发生done事件时,就执行f2。<br>然后，对f1进行改写。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function f1()&#123;</span><br><span class="line">    setTimeout(function()&#123;</span><br><span class="line">        &#x2F;&#x2F;f1函数的执行语句</span><br><span class="line">        f1.trigger(&#39;done&#39;);</span><br><span class="line">    &#125;,2000)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>f1.trigger(‘done’)表示,执行完成后,立即触发done事件，从而开始执行f2。</p>
+<p>&#8194;&#8194;这种方法的优点是比较容易理解，可以绑定多个事件，每个事件可以指定多个回调函数，而且可以去耦合(Decoupling)，有利于实现模块化。缺点是整个程序都要变成事件驱动型，运行流程会变得不清晰。</p>
+<h5 id="Number-three-发布-订阅"><a href="#Number-three-发布-订阅" class="headerlink" title="Number three 发布/订阅"></a>Number three 发布/订阅</h5><p>上一节的”事件”，完全可以理解为”信号”。</p>
+<p>&#8194;&#8194;我们假定,存在一个”信号中心”,某个任务执行完成,就向”信号中心”发布(publish)一个信号,其他任务可以向信号中心”订阅”(subscribe)这个信号,从而知道什么时候自己可以开始执行。这就叫做”<font color="#dc000c">发布/订阅模式</font>“(publish-subscribe pattern),又称”<font color="#dc000c">观察者模式</font>“(observer pattern)。</p>
+<p>这种模式有多种实现方式，下面采用Ben Alman的<a target="_blank" rel="noopener" href="https://plugins.jquery.com/tiny-pubsub/">Tiny Pub/Sub</a>,这是jQuery的一个插件。</p>
+<p>首先,f2向”信号中心”jQuery订阅”done”信号。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jQuery.subscribe(&quot;done&quot;,f2);</span><br></pre></td></tr></table></figure>
+
+<p>然后f1进行这样改写:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function f1()&#123;</span><br><span class="line">    setTimeout(function()&#123;</span><br><span class="line">        &#x2F;&#x2F;f1的执行语句</span><br><span class="line">        jQuery.publish(&quot;done&quot;);</span><br><span class="line">    &#125;,2000);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>jQuery.publish(“done”)的意思是f1执行完成后，向”信号中心”jQuery发布”done”信号，从而引发f2的执行。<br>此外，f2完成执行后，也可以取消订阅(unsubscribe)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jQuery.unsubscribe(&quot;done&quot;,f2);</span><br></pre></td></tr></table></figure>
+<p>&#8194;&#8194;这种方法的性质与”事件监听”类似,但是明显优于后者,因为我们可以通过查看”消息中心”,了解存在多少信号、每个信号有多少订阅者，从而监控程序的运行。</p>
+<h5 id="Number-four-Promises对象"><a href="#Number-four-Promises对象" class="headerlink" title="Number four Promises对象"></a>Number four Promises对象</h5><p>Promises对象是CommonJS工作组提出的一种规范，目的是为异步编程提供统一接口。<br>简单来说，它的思想是，每一个异步任务返回一个Promise对象，该对象有一个then方法，允许指定回调函数。比如，f1的回调函数f2,可以写成：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1().then(f2);</span><br></pre></td></tr></table></figure>
+<p>f1要进行以下改写(这里是采用jQuery的实现)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function f1()&#123;</span><br><span class="line">    var dfd &#x3D; $.Deferred();</span><br><span class="line">    setTimeout(function()&#123;</span><br><span class="line">        &#x2F;&#x2F;f1的函数执行语句</span><br><span class="line">        dfd.resolve();</span><br><span class="line">    &#125;,2000)</span><br><span class="line">    return dfd.promise();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>&#8194;&#8194;这样写的优点在于，回调函数变成了链式写法，程序的流程可以看得一清二楚，而且有完整的一套配套方法，可以实现许多强大的功能。<br>比如，指定多个回调函数:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1.then(f2).then(f3);</span><br></pre></td></tr></table></figure>
+<p>再比如,指定发生错误时的回调函数:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f1().then(f2).fail(f3);</span><br></pre></td></tr></table></figure>
+<p>&#8194;&#8194;而且,它还有一个前面三种方法都没有的好处:如果一个任务已经完成,再添加回调函数,该回调函数会立即执行。所以，你不用担心是否错过了某个事件或信号。这种方法的缺点就是编写和理解都比较困难。</p>
+
+    </div>
+    
+    <div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束&nbsp;<i class="fa fa-paw"></i>&nbsp;感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+    
+    
+    
+        <div class="reward-container">
+  <div>请我吃包辣条吧~</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/weixin.png" alt="蓝眸 微信">
+        <p>微信</p>
+      </div>
+      <div style="display: inline-block;">
+        <img src="/images/zfb.png" alt="蓝眸 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/15/es6Compatible/" rel="prev" title="IE低版本不支持ES6语法的解决方案">
+      <i class="fa fa-chevron-left"></i> IE低版本不支持ES6语法的解决方案
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%9C%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E2%80%9D%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">“异步编程”的几种方法:</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Number-one-%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">Number one 回调函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Number-two-%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">Number two 事件监听</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Number-three-%E5%8F%91%E5%B8%83-%E8%AE%A2%E9%98%85"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">Number three 发布&#x2F;订阅</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Number-four-Promises%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.0.4.</span> <span class="nav-text">Number four Promises对象</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="蓝眸"
+      src="/images/laji02.png">
+  <img src="../images/author_name.png" />
+  <div class="site-description" itemprop="description">欢迎来到林中小筑小憩，本站收录一些我在开发时收集的一些笔记和我对前端技术认知和见解。如有不对之处，还望不吝赐教。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝眸</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+ <canvas id="canvas"></canvas>
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+  <script src="../js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript">
+  var windowWidth = $(window).width();
+  if (windowWidth > 480) {
+    document.write('<script type="text/javascript" src="../js/snow.js"><\/script>');
+  }
+</script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/z16.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":true},"log":false});</script></body>
+</html>
