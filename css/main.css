@@ -974,7 +974,7 @@ pre .javascript .function {
 }
 @media (min-width: 1500px) {
   .header-view {
-    box-shadow: 0px 9px 4px var(--White-Header-boxShadow);
+    box-shadow: 0px 6px 21px #f2f2f2;
     height: 70px;
     padding: 10px 0px;
     display: flex;
@@ -1251,7 +1251,6 @@ pre .javascript .function {
 .sidebar {
   background: var(--White-body-bg);
   bottom: 0;
-  box-shadow: 5px 0px 24px #f2f2f2;
   position: fixed;
   top: 0;
   z-index: 99999;
@@ -1321,7 +1320,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff526c;
+  background: #6f32f4;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2408,6 +2407,7 @@ embed {
 }
 .sidebar.sidebar-active {
   left: 0;
+  box-shadow: 5px 0px 24px #f2f2f2;
 }
 .sidebar {
   width: 320px;
