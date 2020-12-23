@@ -982,12 +982,19 @@ pre .javascript .function {
     background: var(--Theme-color);
   }
   .header-author img:nth-child(1) {
-    width: 15vw;
-    height: 10vh;
+    width: 30px;
+    height: 30px;
   }
-  .header-author img:nth-child(2) {
-    width: 2rem;
-    height: 5rem;
+  .header-author {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .author-name {
+    font-size: 0.75em;
+    font-weight: bold;
+    color: var(--Theme-color);
   }
 }
 @media (min-width: 1500px) {
@@ -1338,7 +1345,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #b92dee;
+  background: #ff05f9;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
