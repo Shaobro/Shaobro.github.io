@@ -68,6 +68,7 @@ NexT.utils = {
       element.wrap(box);
       box.classList.add('highlight-container');
       box.insertAdjacentHTML('beforeend', '<div class="copy-btn"><i class="fa fa-clipboard fa-fw"></i></div>');
+      console.log(box,123);
       var button = element.parentNode.querySelector('.copy-btn');
       button.addEventListener('click', event => {
         var target = event.currentTarget;
