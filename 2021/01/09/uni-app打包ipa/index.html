@@ -42,21 +42,28 @@
     var CONFIG = {"hostname":"shaobro.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况前言&amp;#8194;&amp;#8194;自es6更新以来一直受到各个前端码农喜爱(当然包括我在内),一次写传统项目的时候用到了es6语法,在chrome、firefox上运行都好好的,但一放在魔教IE浏览器上就不动弹了.总不能把项目上的es6语法都改为es5吧,于是我就在网上找了许多方法。终于踏破铁鞋无觅处:">
+  <meta name="description" content="前言&amp;#8194;&amp;#8194;uni-app是DCLoud推出的一款基于Vue.js开发所有前端应用的框架，由于它具有”一套代码,多端部署”的优势，现已坐拥500w+开发者用户。公司上一个项目是做一个APP。所以我又巩固了一下uni-app的知识，今天向大家分享一下uni-app打包ipa是怎么一个流程。 附言:苹果手机对app的渠道管控非常严格,非App Store应用商店下载安装的app应用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IE低版本不支持ES6语法的解决方案">
-<meta property="og:url" content="https://shaobro.github.io/2020/12/15/es6Compatible/index.html">
+<meta property="og:title" content="uni-app打包ipa">
+<meta property="og:url" content="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/index.html">
 <meta property="og:site_name" content="别林小筑">
-<meta property="og:description" content="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况前言&amp;#8194;&amp;#8194;自es6更新以来一直受到各个前端码农喜爱(当然包括我在内),一次写传统项目的时候用到了es6语法,在chrome、firefox上运行都好好的,但一放在魔教IE浏览器上就不动弹了.总不能把项目上的es6语法都改为es5吧,于是我就在网上找了许多方法。终于踏破铁鞋无觅处:">
+<meta property="og:description" content="前言&amp;#8194;&amp;#8194;uni-app是DCLoud推出的一款基于Vue.js开发所有前端应用的框架，由于它具有”一套代码,多端部署”的优势，现已坐拥500w+开发者用户。公司上一个项目是做一个APP。所以我又巩固了一下uni-app的知识，今天向大家分享一下uni-app打包ipa是怎么一个流程。 附言:苹果手机对app的渠道管控非常严格,非App Store应用商店下载安装的app应用">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-12-15T09:10:21.000Z">
-<meta property="article:modified_time" content="2020-12-16T07:12:24.749Z">
+<meta property="og:image" content="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_01.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_02.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_03.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_04.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_05.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_06.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_07.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_08.png">
+<meta property="article:published_time" content="2021-01-09T07:37:27.000Z">
+<meta property="article:modified_time" content="2021-01-09T09:31:48.420Z">
 <meta property="article:author" content="蓝眸">
-<meta property="article:tag" content="javascript">
-<meta property="article:tag" content="浏览器">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_01.png">
 
-<link rel="canonical" href="https://shaobro.github.io/2020/12/15/es6Compatible/">
+<link rel="canonical" href="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/">
 
 
 <script id="page-configurations">
@@ -69,7 +76,7 @@
   };
 </script>
 
-  <title>IE低版本不支持ES6语法的解决方案 | 别林小筑</title>
+  <title>uni-app打包ipa | 别林小筑</title>
   
 
 
@@ -205,7 +212,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shaobro.github.io/2020/12/15/es6Compatible/">
+    <link itemprop="mainEntityOfPage" href="https://shaobro.github.io/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/laji02.png">
@@ -218,7 +225,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          IE低版本不支持ES6语法的解决方案
+          uni-app打包ipa
         </h1>
 
         <div class="post-meta">
@@ -227,16 +234,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2020-12-15 17:10:21" itemprop="dateCreated datePublished" datetime="2020-12-15T17:10:21+08:00">2020-12-15</time>
+              <time title="Created: 2021-01-09 15:37:27 / Modified: 17:31:48" itemprop="dateCreated datePublished" datetime="2021-01-09T15:37:27+08:00">2021-01-09</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-12-16 15:12:24" itemprop="dateModified" datetime="2020-12-16T15:12:24+08:00">2020-12-16</time>
-              </span>
 
           
 
@@ -249,17 +250,46 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况"><a href="#该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况" class="headerlink" title="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况"></a>该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>&#8194;&#8194;自es6更新以来一直受到各个前端码农喜爱(当然包括我在内),一次写传统项目的时候用到了es6语法,在chrome、firefox上运行都好好的,但一放在魔教IE浏览器上就不动弹了.总不能把项目上的es6语法都改为es5吧,于是我就在网上找了许多方法。终于踏破铁鞋无觅处:</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&#8194;&#8194;uni-app是<a target="_blank" rel="noopener" href="https://www.dcloud.io/">DCLoud</a>推出的一款基于<a target="_blank" rel="noopener" href="https://cn.vuejs.org/">Vue.js</a>开发所有前端应用的框架，由于它具有”一套代码,多端部署”的优势，现已坐拥500w+开发者用户。公司上一个项目是做一个APP。所以我又巩固了一下<a target="_blank" rel="noopener" href="https://uniapp.dcloud.io/">uni-app</a>的知识，今天向大家分享一下uni-app打包ipa是怎么一个流程。</p>
+<p>附言:苹果手机对app的渠道管控非常严格,非App Store应用商店下载安装的app应用不能正常使用。</p>
+<p>假设我们现在有一个需要打包成ipa的项目，那么我们则需要申请ios证书和描述文件，其中证书又分为两种:</p>
+<table>
+<thead>
+<tr>
+<th>证书类型</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开发(Development)证书和描述文件</td>
+<td>用于开发测试，在 HBuilderX 中打包后可在真机环境通过<a target="_blank" rel="noopener" href="https://ask.dcloud.net.cn/article/143">Safari调试</a></td>
+</tr>
+<tr>
+<td>发布(Distribution)证书和描述文件</td>
+<td>用于提交 AppStore，在 HBuilderX 中提交云打包后提交到 AppStore 审核发布</td>
+</tr>
+</tbody></table>
 <a id="more"></a>
-<p>1、下载browser.min.js 奉上百度云的地址<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1Exy4HrX5Y9hZ0u6-GzDDCw">https://pan.baidu.com/s/1Exy4HrX5Y9hZ0u6-GzDDCw</a><br>2、引入到项目文件中 如下:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line">    提示：</span><br><span class="line">        一定要加  type&#x3D;&quot;text&#x2F;javascript&quot; 否则浏览器还是不识别</span><br><span class="line">--&gt;</span><br><span class="line"></span><br><span class="line">&lt;script type&#x3D;&quot;text&#x2F;javascript src&#x3D;&quot;browser.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
-
-<p>3、项目用使用es6语法的script标签要改为:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type&#x3D;&quot;text&#x2F;babel&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure></div>
-<p>否则浏览器依旧无法识别</p>
-<p>4、代码:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">    &lt;div id&#x3D;&quot;div&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line"></span><br><span class="line">    &lt;script type&#x3D;&quot;babel&quot;&gt;</span><br><span class="line">        class Index&#123;</span><br><span class="line">            constructor()&#123;</span><br><span class="line">                var a &#x3D; &#96;解析成功&#96;;</span><br><span class="line">                this.show(a);</span><br><span class="line">            &#125;</span><br><span class="line">            show(a)&#123;</span><br><span class="line">                console.log(a);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">    &lt;script type&#x3D;&quot;text&#x2F;javascript&quot; src&#x3D;&quot;browser.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
-
+<h4 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h4><p>·你得先确定你是否拥有苹果开发者账号,并且加入了”ios Developer Program”<br>·Mac OS 10.9+系统(如果已申请p12证书则不需要)</p>
+<h4 id="登录ios-Dev-Center"><a href="#登录ios-Dev-Center" class="headerlink" title="登录ios Dev Center"></a>登录ios Dev Center</h4><p>访问网站<a target="_blank" rel="noopener" href="https://developer.apple.com/devcenter/ios/index.action">ios Dev Center</a><br>使用苹果开发者账号登录ios Dev Center</p>
+<p><img src="/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_01.png" alt="ios Dev Center" title="ios Dev Center"></p>
+<p>登录成功后在页面左侧选择”Certificates &amp; Profiles”进入证书管理页面：</p>
+<p><img src="/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_02.png" alt="Certificates,IDs &amp; Profiles" title="Certificates,IDs &amp; Profiles"></p>
+<p>在证书管理页面,可以看到所有已经申请的证书以及描述文件：</p>
+<p><img src="/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_03.png" alt="证书&amp;描述文件" title="证书&amp;描述文件"></p>
+<h4 id="接下来我细节性地介绍一下如何申请开发、发布证书以及相对应的描述文件"><a href="#接下来我细节性地介绍一下如何申请开发、发布证书以及相对应的描述文件" class="headerlink" title="接下来我细节性地介绍一下如何申请开发、发布证书以及相对应的描述文件"></a>接下来我细节性地介绍一下如何申请开发、发布证书以及相对应的描述文件</h4><p>首先需要申请苹果App ID(App的唯一标识)</p>
+<p>选择页面的”ldentifiers”可查看到已申请的所有App应用标识,点击页面上的加号来创建一个新的应用标识</p>
+<p><img src="/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_04.png" alt="App ID" title="App ID"></p>
+<p>选择标识类型为”App IDs”,然后点击”Continue”</p>
+<p><img src="/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_05.png" alt="Continue" title="Continue"></p>
+<p>平台选择”ios,tvOS,watchOS”,Bundle ID选择”Explicit”,在Description中填写描述,然后填写Bundle ID,Bundle ID要保持唯一性,建议填写反域名加应用标识的格式如:”io.abaaba”,然后点击”Continue”<br><font style="color:#dc000c;font-weight:bold;">注意：在HBuilderX中App提交云端打包时界面上的AppID栏填的就是这个Bundle ID</font></p>
+<p><img src="/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_06.png" alt="Bundle ID" title="Bundle ID"></p>
+<p>接下来需要选择应用需要使用的服务（如需要使用到消息推送功能,则选择”Push Notifications”)，然后点击”Continue”<br><font style="color:#dc000c;font-weight:bold;">注意：如果App用不到的服务一定不要勾选，以免影响审核</font></p>
+<p><img src="/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_07.png" alt="勾选服务" title="勾选服务"></p>
+<p>确认后选择提交，回到identifiers页面即可看到刚创建的App ID:</p>
+<p><img src="/2021/01/09/uni-app%E6%89%93%E5%8C%85ipa/bg_08.png" alt="identifiers" title="identifiers"></p>
+<p>至此，App ID已经创建完成，接下来开始创建证书，在创建开发证书之前，需要先生成证书请求文件。</p>
+<h5 id="未完待续…"><a href="#未完待续…" class="headerlink" title="未完待续…"></a>未完待续…</h5>
     </div>
     
     <div>
@@ -294,10 +324,6 @@
 
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/javascript/" rel="tag"># javascript</a>
-              <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/" rel="tag"># 浏览器</a>
-          </div>
 
         
 
@@ -305,13 +331,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/12/14/crossDomain/" rel="prev" title="前端解决跨域">
-      <i class="fa fa-chevron-left"></i> 前端解决跨域
+    <a href="/2020/12/29/TypeScript/" rel="prev" title="TypeScript">
+      <i class="fa fa-chevron-left"></i> TypeScript
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/12/16/asynchronouspgm/" rel="next" title="Javascript异步编程">
-      Javascript异步编程 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -370,7 +393,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%A5%E6%96%B9%E6%A1%88%E9%92%88%E5%AF%B9%E4%BA%8E%E4%BC%A0%E7%BB%9F%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8es6%E6%96%B0%E7%89%B9%E6%80%A7%E5%9C%A8ie%E4%BD%8E%E7%89%88%E6%9C%AC%E5%8D%B4%E4%B8%8D%E8%AE%A4%E8%AF%86%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">1.</span> <span class="nav-text">该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.0.1.</span> <span class="nav-text">前提条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%99%BB%E5%BD%95ios-Dev-Center"><span class="nav-number">1.0.2.</span> <span class="nav-text">登录ios Dev Center</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A5%E4%B8%8B%E6%9D%A5%E6%88%91%E7%BB%86%E8%8A%82%E6%80%A7%E5%9C%B0%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8B%E5%A6%82%E4%BD%95%E7%94%B3%E8%AF%B7%E5%BC%80%E5%8F%91%E3%80%81%E5%8F%91%E5%B8%83%E8%AF%81%E4%B9%A6%E4%BB%A5%E5%8F%8A%E7%9B%B8%E5%AF%B9%E5%BA%94%E7%9A%84%E6%8F%8F%E8%BF%B0%E6%96%87%E4%BB%B6"><span class="nav-number">1.0.3.</span> <span class="nav-text">接下来我细节性地介绍一下如何申请开发、发布证书以及相对应的描述文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%AA%E5%AE%8C%E5%BE%85%E7%BB%AD%E2%80%A6"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">未完待续…</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
