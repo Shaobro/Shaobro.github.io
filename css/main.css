@@ -411,12 +411,6 @@ table {
   margin: 0 0 20px 0;
   width: 100%;
 }
-tbody tr:nth-of-type(odd) {
-  background: var(--table-row-odd-bg-color);
-}
-tbody tr:hover {
-  background: var(--table-row-hover-bg-color);
-}
 caption,
 th,
 td {
@@ -1508,7 +1502,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #db951f;
+  background: #ffd0ff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
