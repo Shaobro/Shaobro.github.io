@@ -42,21 +42,22 @@
     var CONFIG = {"hostname":"shaobro.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况前言&amp;#8194;&amp;#8194;自es6更新以来一直受到各个前端码农喜爱(当然包括我在内),一次写传统项目的时候用到了es6语法,在chrome、firefox上运行都好好的,但一放在魔教IE浏览器上就不动弹了.总不能把项目上的es6语法都改为es5吧,于是我就在网上找了许多方法。终于踏破铁鞋无觅处:">
+  <meta name="description" content="摄影：蓝眸&amp;#8194;&amp;#8194;峨眉山&amp;#8194;&amp;#8194;2020-01-17 前言this是javascript中的一个关键字。它是函数运行时，在函数体内部自动生成的一个对象，当然，只能在函数体内部使用。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IE低版本不支持ES6语法的解决方案">
-<meta property="og:url" content="https://shaobro.github.io/2020/12/15/es6Compatible/index.html">
+<meta property="og:title" content="JavaScript中this的用法">
+<meta property="og:url" content="https://shaobro.github.io/2021/01/22/JavaScript%E4%B8%ADthis%E7%9A%84%E7%94%A8%E6%B3%95/index.html">
 <meta property="og:site_name" content="别林小筑">
-<meta property="og:description" content="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况前言&amp;#8194;&amp;#8194;自es6更新以来一直受到各个前端码农喜爱(当然包括我在内),一次写传统项目的时候用到了es6语法,在chrome、firefox上运行都好好的,但一放在魔教IE浏览器上就不动弹了.总不能把项目上的es6语法都改为es5吧,于是我就在网上找了许多方法。终于踏破铁鞋无觅处:">
+<meta property="og:description" content="摄影：蓝眸&amp;#8194;&amp;#8194;峨眉山&amp;#8194;&amp;#8194;2020-01-17 前言this是javascript中的一个关键字。它是函数运行时，在函数体内部自动生成的一个对象，当然，只能在函数体内部使用。">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-12-15T09:10:21.000Z">
-<meta property="article:modified_time" content="2020-12-16T07:12:24.749Z">
+<meta property="og:image" content="https://shaobro.github.io/2021/01/22/JavaScript%E4%B8%ADthis%E7%9A%84%E7%94%A8%E6%B3%95/bg_01.png">
+<meta property="article:published_time" content="2021-01-22T06:46:35.000Z">
+<meta property="article:modified_time" content="2021-01-22T08:57:21.596Z">
 <meta property="article:author" content="蓝眸">
 <meta property="article:tag" content="javascript">
-<meta property="article:tag" content="浏览器">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shaobro.github.io/2021/01/22/JavaScript%E4%B8%ADthis%E7%9A%84%E7%94%A8%E6%B3%95/bg_01.png">
 
-<link rel="canonical" href="https://shaobro.github.io/2020/12/15/es6Compatible/">
+<link rel="canonical" href="https://shaobro.github.io/2021/01/22/JavaScript%E4%B8%ADthis%E7%9A%84%E7%94%A8%E6%B3%95/">
 
 
 <script id="page-configurations">
@@ -69,7 +70,7 @@
   };
 </script>
 
-  <title>IE低版本不支持ES6语法的解决方案 | 别林小筑</title>
+  <title>JavaScript中this的用法 | 别林小筑</title>
   
 
 
@@ -205,7 +206,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shaobro.github.io/2020/12/15/es6Compatible/">
+    <link itemprop="mainEntityOfPage" href="https://shaobro.github.io/2021/01/22/JavaScript%E4%B8%ADthis%E7%9A%84%E7%94%A8%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/laji02.png">
@@ -218,7 +219,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          IE低版本不支持ES6语法的解决方案
+          JavaScript中this的用法
         </h1>
 
         <div class="post-meta">
@@ -227,16 +228,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2020-12-15 17:10:21" itemprop="dateCreated datePublished" datetime="2020-12-15T17:10:21+08:00">2020-12-15</time>
+              <time title="Created: 2021-01-22 14:46:35 / Modified: 16:57:21" itemprop="dateCreated datePublished" datetime="2021-01-22T14:46:35+08:00">2021-01-22</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-12-16 15:12:24" itemprop="dateModified" datetime="2020-12-16T15:12:24+08:00">2020-12-16</time>
-              </span>
 
           
 
@@ -249,16 +244,37 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况"><a href="#该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况" class="headerlink" title="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况"></a>该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>&#8194;&#8194;自es6更新以来一直受到各个前端码农喜爱(当然包括我在内),一次写传统项目的时候用到了es6语法,在chrome、firefox上运行都好好的,但一放在魔教IE浏览器上就不动弹了.总不能把项目上的es6语法都改为es5吧,于是我就在网上找了许多方法。终于踏破铁鞋无觅处:</p>
+        <p><img src="/2021/01/22/JavaScript%E4%B8%ADthis%E7%9A%84%E7%94%A8%E6%B3%95/bg_01.png" alt="峨眉山" title="峨眉山"></p>
+<p><font style="color:#999999;font-size:14px;">摄影：蓝眸&#8194;&#8194;峨眉山&#8194;&#8194;2020-01-17</font></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>this是javascript中的一个关键字。<br>它是函数运行时，在函数体内部自动生成的一个对象，当然，只能在函数体内部使用。</p>
 <a id="more"></a>
-<p>1、下载browser.min.js 奉上百度云的地址<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1Exy4HrX5Y9hZ0u6-GzDDCw">https://pan.baidu.com/s/1Exy4HrX5Y9hZ0u6-GzDDCw</a><br>2、引入到项目文件中 如下:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line">    提示：</span><br><span class="line">        一定要加  type&#x3D;&quot;text&#x2F;javascript&quot; 否则浏览器还是不识别</span><br><span class="line">--&gt;</span><br><span class="line"></span><br><span class="line">&lt;script type&#x3D;&quot;text&#x2F;javascript src&#x3D;&quot;browser.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
 
-<p>3、项目用使用es6语法的script标签要改为:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type&#x3D;&quot;text&#x2F;babel&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure></div>
-<p>否则浏览器依旧无法识别</p>
-<p>4、代码:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">    &lt;div id&#x3D;&quot;div&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line"></span><br><span class="line">    &lt;script type&#x3D;&quot;babel&quot;&gt;</span><br><span class="line">        class Index&#123;</span><br><span class="line">            constructor()&#123;</span><br><span class="line">                var a &#x3D; &#96;解析成功&#96;;</span><br><span class="line">                this.show(a);</span><br><span class="line">            &#125;</span><br><span class="line">            show(a)&#123;</span><br><span class="line">                console.log(a);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">    &lt;script type&#x3D;&quot;text&#x2F;javascript&quot; src&#x3D;&quot;browser.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function text()&#123;</span><br><span class="line">    this.name &#x3D; &#39;蓝眸&#39;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>上段代码中，函数test运行时,内部会自动生成一个this对象可以使用。<br>那么，this的值是什么?</p>
+<p>函数的不同使用场合，this有不同的值。总的来说，this就是函数运行时所在的环境对象。下面分四种情况，详细讨论this的用法。</p>
+<p>情况一:纯粹的函数调用<br>这是函数的最通常用法，属于全局性调用，因此this就代表全局对象。看下面这段代码，它的运行结果是”蓝眸”。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var name &#x3D; &quot;蓝眸&quot;;</span><br><span class="line">function test()&#123;</span><br><span class="line">    console.log(this.name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test();  &#x2F;&#x2F; 蓝眸</span><br></pre></td></tr></table></figure></div>
+
+<p>情况二：作为对象方法调用</p>
+<p>函数还可以作为某个对象的方法调用，这时this就指 这个上级对象。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function test()&#123;</span><br><span class="line">    console.log(this.x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var obj &#x3D; &#123;&#125;;</span><br><span class="line">obj.x &#x3D; 1;</span><br><span class="line">obj.m &#x3D; test;</span><br><span class="line"></span><br><span class="line">obj.m();  &#x2F;&#x2F; 1</span><br></pre></td></tr></table></figure></div>
+
+<p>情况三： 作为构造函数调用</p>
+<p>所谓构造函数，就是通过这个函数，可以生成一个新对象。这时，this就指这个新对象。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function test()&#123;</span><br><span class="line">    this.x &#x3D; 1;</span><br><span class="line">&#125;</span><br><span class="line">var obj &#x3D; new test();</span><br><span class="line">console.log(obj.x); &#x2F;&#x2F; 1</span><br></pre></td></tr></table></figure></div>
+<p>运行结果为1。为了表明这时this不是全局对象，我们对代码做一些修改:</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var x &#x3D; 2;</span><br><span class="line">function test()&#123;</span><br><span class="line">    this.x &#x3D; 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var obj &#x3D; new test();</span><br><span class="line">console.log(x); &#x2F;&#x2F; 2</span><br></pre></td></tr></table></figure></div>
+
+<p>运行结果为2，表明全局变量x的值根本没变。</p>
+<p>情况四: apply的调用</p>
+<p>apply()是函数的一个方法，作用是改变函数的调用对象。它的第一个参数就表示改变后的调用这个函数的对象。因此，这时this指的就是这第一个参数。<br>apply()的参数为空时，默认调用全局对象。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var x &#x3D; 0;</span><br><span class="line">function test()&#123;</span><br><span class="line">    console.log(this.x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var obj &#x3D; &#123;&#125;;</span><br><span class="line">obj.x &#x3D; 1;</span><br><span class="line">obj.m &#x3D; test;</span><br><span class="line">obj.m.apply();  &#x2F;&#x2F; 0</span><br></pre></td></tr></table></figure></div>
+
+<p>如果把最后一行代码修改为</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">obj.m.apply(obj); &#x2F;&#x2F; 1</span><br></pre></td></tr></table></figure></div>
+
+<p>运行结果就变成了1，证明这时this代表的是对象obj;</p>
 
     </div>
     
@@ -296,7 +312,6 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/javascript/" rel="tag"># javascript</a>
-              <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/" rel="tag"># 浏览器</a>
           </div>
 
         
@@ -305,13 +320,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/12/14/crossDomain/" rel="prev" title="前端解决跨域">
-      <i class="fa fa-chevron-left"></i> 前端解决跨域
+    <a href="/2021/01/14/JavaScript%E6%95%B0%E7%BB%84API%E5%85%A8%E9%9B%86/" rel="prev" title="JavaScript数组API全集">
+      <i class="fa fa-chevron-left"></i> JavaScript数组API全集
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/12/16/asynchronouspgm/" rel="next" title="Javascript异步编程">
-      Javascript异步编程 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -370,7 +382,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%A5%E6%96%B9%E6%A1%88%E9%92%88%E5%AF%B9%E4%BA%8E%E4%BC%A0%E7%BB%9F%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8es6%E6%96%B0%E7%89%B9%E6%80%A7%E5%9C%A8ie%E4%BD%8E%E7%89%88%E6%9C%AC%E5%8D%B4%E4%B8%8D%E8%AE%A4%E8%AF%86%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">1.</span> <span class="nav-text">该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
