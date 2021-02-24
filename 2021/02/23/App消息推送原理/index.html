@@ -1,0 +1,508 @@
+<!--
+                   ___====-_  _-====___
+             _--^^^#####//      \\#####^^^--_
+          _-^##########// (    ) \\##########^-_
+         -############//  |\^^/|  \\############-
+       _/############//   (@::@)   \\############\_
+      /#############((     \\//     ))#############\
+     -###############\\    (oo)    //###############-
+    -#################\\  / VV \  //#################-
+   -###################\\/      \//###################-
+  _#/|##########/\######(   /\   )######/\##########|\#_
+  |/ |#/\#/\#/\/  \#/\##\  |  |  /##/\#/  \/\#/\#/\#| \|
+  `  |/  V  V  `   V  \#\| |  | |/#/  V   '  V  V  \|  '
+     `   `  `      `   / | |  | | \   '      '  '   '
+                      (  | |  | |  )
+                     __\ | |  | | /__
+                    (vvv(VVV)(VVV)vvv)
+                         神兽保佑
+                        代码无BUG!
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-16x16-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="../css/theme-pace.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shaobro.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1丶基本概念·目的：在用户打开App时，App主动向用户推送最新消息 ·基本原理：服务器如何先找到设备、再找到App?每一个设备都有一个自己的设备号，而设备中的app又都有一个唯一的包名。所以服务器只需要找到设备号与包名就可以定位到某个设备的某个应用，而这设备号与包名会一起构成一个标识符，叫做device_token,因此问题就简化为把device_token与消息内容等信息交给服务器，服务器把内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="App消息推送原理">
+<meta property="og:url" content="https://shaobro.github.io/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="别林小筑">
+<meta property="og:description" content="1丶基本概念·目的：在用户打开App时，App主动向用户推送最新消息 ·基本原理：服务器如何先找到设备、再找到App?每一个设备都有一个自己的设备号，而设备中的app又都有一个唯一的包名。所以服务器只需要找到设备号与包名就可以定位到某个设备的某个应用，而这设备号与包名会一起构成一个标识符，叫做device_token,因此问题就简化为把device_token与消息内容等信息交给服务器，服务器把内">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://shaobro.github.io/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_01.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_02.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_03.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_03.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_04.png">
+<meta property="og:image" content="https://shaobro.github.io/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_05.png">
+<meta property="article:published_time" content="2021-02-23T02:13:26.000Z">
+<meta property="article:modified_time" content="2021-02-23T06:48:49.478Z">
+<meta property="article:author" content="蓝眸">
+<meta property="article:tag" content="uni-app">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shaobro.github.io/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_01.png">
+
+<link rel="canonical" href="https://shaobro.github.io/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>App消息推送原理 | 别林小筑</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+
+    <header class="header header-view" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-cont"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">别林小筑</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">web前端</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-首页">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i><span>首页</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i><span>Tags</span></a>
+
+  </li>
+        <li class="menu-item menu-item-列表">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i><span>列表</span></a>
+
+  </li>
+        <li class="menu-item menu-item-关于博主">
+
+    <a href="/intro" rel="section"><i class="fa fa-archive fa-fw"></i><span>关于博主</span></a>
+
+  </li>
+        <li class="menu-item menu-item-友情链接">
+
+    <a href="/friend" rel="section"><i class="fa fa-archive fa-fw"></i><span>友情链接</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+<div class="header-weather">
+    <div class="header-weather-cont">
+       <iframe width="350" scrolling="no" height="70" frameborder="0" allowtransparency="true" src="https://i.tianqi.com?c=code&id=37&icon=4&site=12" style="color:#555;"></iframe>
+    </div>
+</div>
+<div class="header-author">
+    <div>
+    <img class="site-author-image" itemprop="image" alt="蓝眸"
+      src="/images/laji02.png">
+    </div>
+    
+  <div class="author-name">蓝眸</div>
+</div>
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shaobro.github.io/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/laji02.png">
+      <meta itemprop="name" content="蓝眸">
+      <meta itemprop="description" content="各类技术博客五花八门,但大多数都会误导人。本网站只积累权威博客,坚持真理。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="别林小筑">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          App消息推送原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-02-23 10:13:26 / Modified: 14:48:49" itemprop="dateCreated datePublished" datetime="2021-02-23T10:13:26+08:00">2021-02-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1丶基本概念"><a href="#1丶基本概念" class="headerlink" title="1丶基本概念"></a>1丶基本概念</h3><p>·目的：在用户打开App时，App主动向用户推送最新消息<br><img src="/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_01.png" alt="Background" title="原理"></p>
+<p>·基本原理：服务器如何先找到设备、再找到App?<br>每一个设备都有一个自己的设备号，而设备中的app又都有一个唯一的包名。所以服务器只需要找到设备号与包名就可以定位到某个设备的某个应用，而这设备号与包名会一起构成一个标识符，叫做device_token,因此问题就简化为把device_token与消息内容等信息交给服务器，服务器把内容发到唯一的device_token上。</p>
+<p>·作用：功能需要，如：资讯类产品的新闻推送，工具类产品的公告推送等等；活动运营需要，如：电商类产品的促销活动；召回用户/提高活跃度等等。</p>
+<a id="more"></a>
+
+<h2 id="2丶ios和Android消息推送原理对比"><a href="#2丶ios和Android消息推送原理对比" class="headerlink" title="2丶ios和Android消息推送原理对比"></a>2丶ios和Android消息推送原理对比</h2><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ios的消息推送机制面世之时是一种全新的解决方案(堪称平台中的平台)，</span><br><span class="line">应用本身不能有常驻的后台进程，系统的开销少，内存使用更少，</span><br><span class="line">电量也更少(把更多的运算和资源开销放在云端，非设备端)。</span><br><span class="line">而Android的特点，虽然开销大，优点是更稳定快速，但不明显。</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="2-1-iOS"><a href="#2-1-iOS" class="headerlink" title="2.1 iOS"></a>2.1 iOS</h3><h4 id="2-1-1基本原理"><a href="#2-1-1基本原理" class="headerlink" title="2.1.1基本原理"></a>2.1.1基本原理</h4><p>iOS系统的推送(APNS,即Apple Push Notification Service)依托一个或几个系统常驻进程运行，是全局的(接管所有应用的消息推送)，所以可看作是独立于应用之外，而且是设备和苹果服务器之间的通讯，而非应用的提供商服务器。</p>
+<p><img src="/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_02.png" alt="Background" title="原理"></p>
+<p>iOS的推送是通过苹果自己的APNS服务进行的，用户需要将device_token以及消息内容等推送信息交给APNS服务器，剩下的均由苹果自己来完成。iOS应用的推送大部分情况下都要依赖苹果生态提供的APNS(Apple Push Notification Service)服务。</p>
+<p><img src="/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_03.png" alt="Background" title="原理"></p>
+<p>1.首先，作为设备标识的device_token是由APNS颁发的，App开发者或者第三方推送平台(图中的Provider)做的工作是收集这个device_token,APNS的推送是要求基于APNS的颁发device_token来推送的，只有正确的device_token才会被APNS接收，如果是一个错误的、或者无效的device_token(比如App已经卸载了)，APNS就不会接收。</p>
+<p>2.接着，开发者使用第三方推送平台(图中的Provider)在将推送内容与范围选定之后进行推送，第三方推送平台将信息提交给APNS，剩下的操作全部由APNS来进行完成，整个过程第三方推送平台就不能控制了。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">例如，腾讯QQ的服务器(Provider)会给苹果公司对应的服务器(APNS)发出通知，然后再中转传送到你的设备(Devices)之上。当你接收到通知，打开应用，才开始从腾讯服务器接收数据，跟你之前看到通知里内容一样，但却是经由两个不同的通道而来。</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="2-1-2优劣势"><a href="#2-1-2优劣势" class="headerlink" title="2.1.2优劣势"></a>2.1.2优劣势</h4><p>所以，iOS的推送，可以不严谨地理解为：<br>1、苹果服务器朝手机后台挂的一个IM服务程序发送的消息；<br>2、系统根据该IM消息识别告诉哪个Apps具体发生了什么事；<br>3、系统分别通知这些Apps;</p>
+<p>他们带给用户的好处是实实在在的：<br>1、安全：只有登录过的开发者可以通过苹果的服务器推送；<br>2、快速、稳定、可靠：苹果掌控推送服务器和OS；<br>3、更省电；<br>4、让整个系统的体验更统一和简单：不会出现杀后台这种脑残事。(不用大量Apps/Apps的服务为了推送挂后台)。也不会出现Apps被杀就收不到推送这种脑残事(早一点的新浪微博Android版仍旧如此)；<br>5、开发容易：当然，开发者还是要做些事情，比如维护个服务器什么的。但是复杂度无疑降低了很多；</p>
+<h3 id="2-2Android"><a href="#2-2Android" class="headerlink" title="2.2Android"></a>2.2Android</h3><p>而Android,就不同，更像是传统桌面电脑系统做法。每个需要后台推送的应用有各自的单独后台进程，才能和各自的服务器通讯，交换数据。另外其实Android也有类似APNS的GCM(Google Cloud Message),属于开发者可选，非强制。</p>
+<h4 id="2-2-1-基本原理"><a href="#2-2-1-基本原理" class="headerlink" title="2.2.1 基本原理"></a>2.2.1 基本原理</h4><p>Android平台在不使用GCM的情况下就需要将自己的服务器或是第三方推送服务器与设备建立一条长连接，通过长连接进行推送。</p>
+<p><img src="/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_03.png" alt="Background" title="原理"></p>
+<p>开发者通过第三方推送服务提供商将信息直接下发给需要的设备，第三方推送服务提供商与设备建立一条长连接通道，并且将消息路由到APP中(图中的设备1和设备2) ，对于像设备3这种无网络连接或是没有成功建立长连接通道的设备，会在设备3连网且推送消息没有过期的情况下自动收到由第三方推送服务提供商推送过来的消息，保证消息不会丢失。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">但是不建议自己设置服务器实现推送功能。</span><br><span class="line">一是因为成本太高(开发成本、维护成本),自己搭建的服务器无论是稳定性还是速度上都比不了第三方推送</span><br><span class="line">服务提供商的效果；</span><br><span class="line">另一个是因为自己的数据量较小，使用第三方推送服务提供商可以用他们的纬度进行推送，实现精准推送。</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="2-2-2-优劣势"><a href="#2-2-2-优劣势" class="headerlink" title="2.2.2 优劣势"></a>2.2.2 优劣势</h4><p>Apps挂后台一直是Android引以为豪的特性，挂后台等待推送就成为技术选择；<br>但是，没人真正为用户的电池负责。Apps的开发者不会站在系统层面考虑的。他会假设其他Apps没有那么”不自觉”；<br>优点在于，因为整个技术方案非强制，Android的Apps在接收到推送后的表现更为灵活。像Line的Android版本可以在推送通知的Popup上直接回复，iOS就需要越狱才能做到了。</p>
+<h2 id="3、Android消息推送原理"><a href="#3、Android消息推送原理" class="headerlink" title="3、Android消息推送原理"></a>3、Android消息推送原理</h2><h3 id="3-1-操作系统有自身的消息推送功能-系统级别"><a href="#3-1-操作系统有自身的消息推送功能-系统级别" class="headerlink" title="3.1 操作系统有自身的消息推送功能(系统级别)"></a>3.1 操作系统有自身的消息推送功能(系统级别)</h3><p>· 系统级别:任何时候都能推送给用户，且不会被系统杀死。<br>· Android的消息推送服务称为:C2DM(Cloud to Device Messaging)</p>
+<h3 id="3-2-三种基本的推送方式：Push、Pull和SMS"><a href="#3-2-三种基本的推送方式：Push、Pull和SMS" class="headerlink" title="3.2 三种基本的推送方式：Push、Pull和SMS"></a>3.2 三种基本的推送方式：Push、Pull和SMS</h3><p>·本质：App将服务器更新的信息推送给用户，即App获取服务器信息，再推送给用户<br>·App从服务器获取最新消息的基本方式(原理)有三种：Push、Pull和SMS</p>
+<p><img src="/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_04.png" alt="Background" title="通知"></p>
+<h4 id="3-2-1-轮询-Pll-方式"><a href="#3-2-1-轮询-Pll-方式" class="headerlink" title="3.2.1 轮询(Pll)方式"></a>3.2.1 轮询(Pll)方式</h4><p>应用程序应当阶段性地与服务器进行连接并查询是否有新的消息到达，你必须自己实现与服务器之间的通信，例如消息排队等。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">要考虑轮询的频率，</span><br><span class="line">如果太慢可能导致某些消息的延迟，如果太快，则会大量小号网络带款和电池，</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="3-2-2-持久连接-Push-方式"><a href="#3-2-2-持久连接-Push-方式" class="headerlink" title="3.2.2 持久连接(Push)方式"></a>3.2.2 持久连接(Push)方式</h4><p>这个方案可以解决由轮询带来的性能问题，但是还是会消耗手机的电池。iOS平台的推送服务之所以工作做得好，是因为每一台手机仅仅保持一个与服务器之间的连接，事实上C2DM也是这么工作的。不过刚才也讲了，这个方案存在很多的不足之处，就是我们很难在手机上实现一个可靠的服务，目前也无法与iOS平台的推送功能相比。</p>
+<h4 id="3-2-3-SMS-Push-方式"><a href="#3-2-3-SMS-Push-方式" class="headerlink" title="3.2.3 SMS(Push)方式"></a>3.2.3 SMS(Push)方式</h4><p>在Android平台上，可以通过拦截SMS消息并且解析消息内容来了解服务器的意图，并获取其显示内容进行处理。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">优势：可以实现完全的事实操作。</span><br><span class="line">劣势：成本相对比较高，需要向移动公司缴纳相应的费用。我们目前很难找到免费的短消息发送网关来实现这种方案。</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="3-3-七种主流的Android消息推送方式"><a href="#3-3-七种主流的Android消息推送方式" class="headerlink" title="3.3 七种主流的Android消息推送方式"></a>3.3 七种主流的Android消息推送方式</h3><p><img src="/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/bg_05.png" alt="Background" title="通知"></p>
+<p>本文转载于 <a target="_blank" rel="noopener" href="https://blog.csdn.net/cyjbenyy/article/details/89676217">这里</a></p>
+
+    </div>
+    
+    <div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束&nbsp;<i class="fa fa-paw"></i>&nbsp;感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+    
+    
+    
+        <div class="reward-container">
+  <div>请我吃包辣条吧~</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/weixin.png" alt="蓝眸 微信">
+        <p>微信</p>
+      </div>
+      <div style="display: inline-block;">
+        <img src="/images/zfb.png" alt="蓝眸 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/uni-app/" rel="tag"># uni-app</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/08/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E7%AC%AC%E4%B8%80%E7%AF%87/" rel="prev" title="前端面试第一篇">
+      <i class="fa fa-chevron-left"></i> 前端面试第一篇
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E4%B8%B6%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">1丶基本概念</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E4%B8%B6ios%E5%92%8CAndroid%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86%E5%AF%B9%E6%AF%94"><span class="nav-number"></span> <span class="nav-text">2丶ios和Android消息推送原理对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-iOS"><span class="nav-number">1.</span> <span class="nav-text">2.1 iOS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">2.1.1基本原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2%E4%BC%98%E5%8A%A3%E5%8A%BF"><span class="nav-number">1.2.</span> <span class="nav-text">2.1.2优劣势</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2Android"><span class="nav-number">2.</span> <span class="nav-text">2.2Android</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">2.1.</span> <span class="nav-text">2.2.1 基本原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-%E4%BC%98%E5%8A%A3%E5%8A%BF"><span class="nav-number">2.2.</span> <span class="nav-text">2.2.2 优劣势</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81Android%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86"><span class="nav-number"></span> <span class="nav-text">3、Android消息推送原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%9C%89%E8%87%AA%E8%BA%AB%E7%9A%84%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8A%9F%E8%83%BD-%E7%B3%BB%E7%BB%9F%E7%BA%A7%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">3.1 操作系统有自身的消息推送功能(系统级别)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E7%9A%84%E6%8E%A8%E9%80%81%E6%96%B9%E5%BC%8F%EF%BC%9APush%E3%80%81Pull%E5%92%8CSMS"><span class="nav-number">2.</span> <span class="nav-text">3.2 三种基本的推送方式：Push、Pull和SMS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-%E8%BD%AE%E8%AF%A2-Pll-%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">3.2.1 轮询(Pll)方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-%E6%8C%81%E4%B9%85%E8%BF%9E%E6%8E%A5-Push-%E6%96%B9%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">3.2.2 持久连接(Push)方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-SMS-Push-%E6%96%B9%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">3.2.3 SMS(Push)方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E4%B8%83%E7%A7%8D%E4%B8%BB%E6%B5%81%E7%9A%84Android%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">3.3 七种主流的Android消息推送方式</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="蓝眸"
+      src="/images/laji02.png">
+  <img src="../images/author_name.png" />
+  <div class="site-description" itemprop="description">各类技术博客五花八门,但大多数都会误导人。本网站只积累权威博客,坚持真理。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝眸</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+ <canvas id="canvas"></canvas>
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+  <script src="../js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript">
+    var windowWidth = $(window).width();
+  if (windowWidth > 480) {
+    document.write('<script type="text/javascript" src="../js/snow.js"><\/script>');
+  }
+</script>
+<script src="/live2d-widget/autoload.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-wanko"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>

@@ -42,21 +42,20 @@
     var CONFIG = {"hostname":"shaobro.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况前言&amp;#8194;&amp;#8194;自es6更新以来一直受到各个前端码农喜爱(当然包括我在内),一次写传统项目的时候用到了es6语法,在chrome、firefox上运行都好好的,但一放在魔教IE浏览器上就不动弹了.总不能把项目上的es6语法都改为es5吧,于是我就在网上找了许多方法。终于踏破铁鞋无觅处:">
+  <meta name="description" content="一、谈谈你对MVVM开发模式的理解MVVM分为Model、View、ViewModel三者。Model代表数据模型，数据和业务逻辑都在Model层中定义；View代表ui视图，负责数据的展示；ViewModel负责监听Model中数据的改变并且控制视图的更新，处理用户交互操作；Model和View并无直接关联，而是通过ViewModel来进行联系的，Model和ViewModel之间有着双向数据绑">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IE低版本不支持ES6语法的解决方案">
-<meta property="og:url" content="https://shaobro.github.io/2020/12/15/es6Compatible/index.html">
+<meta property="og:title" content="前端面试第一篇">
+<meta property="og:url" content="https://shaobro.github.io/2021/02/08/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E7%AC%AC%E4%B8%80%E7%AF%87/index.html">
 <meta property="og:site_name" content="别林小筑">
-<meta property="og:description" content="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况前言&amp;#8194;&amp;#8194;自es6更新以来一直受到各个前端码农喜爱(当然包括我在内),一次写传统项目的时候用到了es6语法,在chrome、firefox上运行都好好的,但一放在魔教IE浏览器上就不动弹了.总不能把项目上的es6语法都改为es5吧,于是我就在网上找了许多方法。终于踏破铁鞋无觅处:">
+<meta property="og:description" content="一、谈谈你对MVVM开发模式的理解MVVM分为Model、View、ViewModel三者。Model代表数据模型，数据和业务逻辑都在Model层中定义；View代表ui视图，负责数据的展示；ViewModel负责监听Model中数据的改变并且控制视图的更新，处理用户交互操作；Model和View并无直接关联，而是通过ViewModel来进行联系的，Model和ViewModel之间有着双向数据绑">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-12-15T09:10:21.000Z">
-<meta property="article:modified_time" content="2020-12-16T07:12:24.749Z">
+<meta property="article:published_time" content="2021-02-08T02:50:13.000Z">
+<meta property="article:modified_time" content="2021-02-23T06:19:50.642Z">
 <meta property="article:author" content="蓝眸">
-<meta property="article:tag" content="javascript">
-<meta property="article:tag" content="浏览器">
+<meta property="article:tag" content="vue">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://shaobro.github.io/2020/12/15/es6Compatible/">
+<link rel="canonical" href="https://shaobro.github.io/2021/02/08/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E7%AC%AC%E4%B8%80%E7%AF%87/">
 
 
 <script id="page-configurations">
@@ -69,7 +68,7 @@
   };
 </script>
 
-  <title>IE低版本不支持ES6语法的解决方案 | 别林小筑</title>
+  <title>前端面试第一篇 | 别林小筑</title>
   
 
 
@@ -205,7 +204,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://shaobro.github.io/2020/12/15/es6Compatible/">
+    <link itemprop="mainEntityOfPage" href="https://shaobro.github.io/2021/02/08/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E7%AC%AC%E4%B8%80%E7%AF%87/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/laji02.png">
@@ -218,7 +217,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          IE低版本不支持ES6语法的解决方案
+          前端面试第一篇
         </h1>
 
         <div class="post-meta">
@@ -228,14 +227,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-12-15 17:10:21" itemprop="dateCreated datePublished" datetime="2020-12-15T17:10:21+08:00">2020-12-15</time>
+              <time title="Created: 2021-02-08 10:50:13" itemprop="dateCreated datePublished" datetime="2021-02-08T10:50:13+08:00">2021-02-08</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-12-16 15:12:24" itemprop="dateModified" datetime="2020-12-16T15:12:24+08:00">2020-12-16</time>
+                <time title="Modified: 2021-02-23 14:19:50" itemprop="dateModified" datetime="2021-02-23T14:19:50+08:00">2021-02-23</time>
               </span>
 
           
@@ -249,17 +248,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况"><a href="#该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况" class="headerlink" title="该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况"></a>该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>&#8194;&#8194;自es6更新以来一直受到各个前端码农喜爱(当然包括我在内),一次写传统项目的时候用到了es6语法,在chrome、firefox上运行都好好的,但一放在魔教IE浏览器上就不动弹了.总不能把项目上的es6语法都改为es5吧,于是我就在网上找了许多方法。终于踏破铁鞋无觅处:</p>
-<a id="more"></a>
-<p>1、下载browser.min.js 奉上百度云的地址<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1Exy4HrX5Y9hZ0u6-GzDDCw">https://pan.baidu.com/s/1Exy4HrX5Y9hZ0u6-GzDDCw</a><br>2、引入到项目文件中 如下:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line">    提示：</span><br><span class="line">        一定要加  type&#x3D;&quot;text&#x2F;javascript&quot; 否则浏览器还是不识别</span><br><span class="line">--&gt;</span><br><span class="line"></span><br><span class="line">&lt;script type&#x3D;&quot;text&#x2F;javascript src&#x3D;&quot;browser.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
-
-<p>3、项目用使用es6语法的script标签要改为:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type&#x3D;&quot;text&#x2F;babel&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure></div>
-<p>否则浏览器依旧无法识别</p>
-<p>4、代码:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">    &lt;div id&#x3D;&quot;div&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line"></span><br><span class="line">    &lt;script type&#x3D;&quot;babel&quot;&gt;</span><br><span class="line">        class Index&#123;</span><br><span class="line">            constructor()&#123;</span><br><span class="line">                var a &#x3D; &#96;解析成功&#96;;</span><br><span class="line">                this.show(a);</span><br><span class="line">            &#125;</span><br><span class="line">            show(a)&#123;</span><br><span class="line">                console.log(a);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">    &lt;script type&#x3D;&quot;text&#x2F;javascript&quot; src&#x3D;&quot;browser.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
-
+        <h2 id="一、谈谈你对MVVM开发模式的理解"><a href="#一、谈谈你对MVVM开发模式的理解" class="headerlink" title="一、谈谈你对MVVM开发模式的理解"></a>一、谈谈你对MVVM开发模式的理解</h2><p>MVVM分为Model、View、ViewModel三者。<br><strong>Model</strong>代表数据模型，数据和业务逻辑都在Model层中定义；<br><strong>View</strong>代表ui视图，负责数据的展示；<br><strong>ViewModel</strong>负责监听<strong>Model</strong>中数据的改变并且控制视图的更新，处理用户交互操作；<br><strong>Model</strong>和<strong>View</strong>并无直接关联，而是通过<strong>ViewModel</strong>来进行联系的，<strong>Model</strong>和<strong>ViewModel</strong>之间有着双向数据绑定的联系。因此当<strong>Model</strong>的数据改变时会触发<strong>View</strong>层的刷新，<strong>View</strong>中由于用户交互操作而改变的数据也会在<strong>Model</strong>中同步。<br>这种模式实现了<strong>Model</strong>和<strong>View</strong>的数据自动同步，因此开发者只需要专注对数据的维护操作即可，而不是需要自己操作dom。</p>
+<h2 id="二、vue有哪些指令？"><a href="#二、vue有哪些指令？" class="headerlink" title="二、vue有哪些指令？"></a>二、vue有哪些指令？</h2><p>v-bind、v-model、v-html、v-for、v-show、v-if</p>
+<h2 id="三、v-if和v-show-有什么区别？"><a href="#三、v-if和v-show-有什么区别？" class="headerlink" title="三、v-if和v-show 有什么区别？"></a>三、v-if和v-show 有什么区别？</h2><p>v-show仅仅控制元素的显示方式，将display属性在block和none来回切换；而v-if会控制这个DOM节点的是否存在。当我们需要频繁切换某个元素的显示/隐藏时，使用v-show会更加节省性能上的开销；当只需要一次显示或隐藏时，使用v-if更加合理。</p>
+<h2 id="四、简述Vue的响应式原理"><a href="#四、简述Vue的响应式原理" class="headerlink" title="四、简述Vue的响应式原理"></a>四、简述Vue的响应式原理</h2><p>当一个Vue实例创建时，vue会遍历data选项的属性，用Object.defineProperty将它们转为getter/setter并且在内部追踪相关技术依赖，在属性被访问和修改时通知变化。<br>每个组件实例都有相应的watcher程序实例，它会在组件渲染的过程中把属性记录为依赖，之后当依赖项的setter被调用时，会通知watcher重新计算，从而致使它关联的组件得以更新。</p>
+<h2 id="五、Vue中如何在组件内部实现一个双向数据绑定？"><a href="#五、Vue中如何在组件内部实现一个双向数据绑定？" class="headerlink" title="五、Vue中如何在组件内部实现一个双向数据绑定？"></a>五、Vue中如何在组件内部实现一个双向数据绑定？</h2><p>假设有一个输入框组件，用户输入时，同步父组件页面中的数据<br>具体思路：父组件通过props传值给子组件，子组件通过$emit来通知父组件修改相应的props的值，具体实现如下：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &quot;vue&quot;</span><br><span class="line"></span><br><span class="line">const component &#x3D; &#123;</span><br><span class="line">    props: [&#39;value&#39;],</span><br><span class="line">    template:&#96;</span><br><span class="line">        &lt;div&gt;</span><br><span class="line">            &lt;input type&#x3D;&#39;text&#39; @input&#x3D;&#39;handleInput&#39; :value&#x3D;&#39;value&#39;&gt;</span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">    &#96;,</span><br><span class="line">    data()&#123;</span><br><span class="line">        return&#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">        handle</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
     </div>
     
     <div>
@@ -295,8 +289,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/javascript/" rel="tag"># javascript</a>
-              <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/" rel="tag"># 浏览器</a>
+              <a href="/tags/vue/" rel="tag"># vue</a>
           </div>
 
         
@@ -305,12 +298,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/12/14/crossDomain/" rel="prev" title="前端解决跨域">
-      <i class="fa fa-chevron-left"></i> 前端解决跨域
+    <a href="/2021/01/25/JavaScript%E6%B7%B1%E6%B5%85%E6%8B%B7%E8%B4%9D/" rel="prev" title="JavaScript深浅拷贝">
+      <i class="fa fa-chevron-left"></i> JavaScript深浅拷贝
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/12/16/asynchronouspgm/" rel="next" title="Javascript异步编程">
-      Javascript异步编程 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/02/23/App%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81%E5%8E%9F%E7%90%86/" rel="next" title="App消息推送原理">
+      App消息推送原理 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -370,7 +363,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%A5%E6%96%B9%E6%A1%88%E9%92%88%E5%AF%B9%E4%BA%8E%E4%BC%A0%E7%BB%9F%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8es6%E6%96%B0%E7%89%B9%E6%80%A7%E5%9C%A8ie%E4%BD%8E%E7%89%88%E6%9C%AC%E5%8D%B4%E4%B8%8D%E8%AE%A4%E8%AF%86%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">1.</span> <span class="nav-text">该方案针对于传统项目使用es6新特性在ie低版本却不认识的情况</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%B0%88%E8%B0%88%E4%BD%A0%E5%AF%B9MVVM%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%90%86%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">一、谈谈你对MVVM开发模式的理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81vue%E6%9C%89%E5%93%AA%E4%BA%9B%E6%8C%87%E4%BB%A4%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">二、vue有哪些指令？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81v-if%E5%92%8Cv-show-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">三、v-if和v-show 有什么区别？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%AE%80%E8%BF%B0Vue%E7%9A%84%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">四、简述Vue的响应式原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81Vue%E4%B8%AD%E5%A6%82%E4%BD%95%E5%9C%A8%E7%BB%84%E4%BB%B6%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E5%8F%8C%E5%90%91%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A%EF%BC%9F"><span class="nav-number">5.</span> <span class="nav-text">五、Vue中如何在组件内部实现一个双向数据绑定？</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
