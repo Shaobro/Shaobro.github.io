@@ -1,0 +1,478 @@
+<!--
+                   ___====-_  _-====___
+             _--^^^#####//      \\#####^^^--_
+          _-^##########// (    ) \\##########^-_
+         -############//  |\^^/|  \\############-
+       _/############//   (@::@)   \\############\_
+      /#############((     \\//     ))#############\
+     -###############\\    (oo)    //###############-
+    -#################\\  / VV \  //#################-
+   -###################\\/      \//###################-
+  _#/|##########/\######(   /\   )######/\##########|\#_
+  |/ |#/\#/\#/\/  \#/\##\  |  |  /##/\#/  \/\#/\#/\#| \|
+  `  |/  V  V  `   V  \#\| |  | |/#/  V   '  V  V  \|  '
+     `   `  `      `   / | |  | | \   '      '  '   '
+                      (  | |  | |  )
+                     __\ | |  | | /__
+                    (vvv(VVV)(VVV)vvv)
+                         神兽保佑
+                        代码无BUG!
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-16x16-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="../css/theme-pace.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"shaobro.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言关于前端代码性能优化，一直是老生常谈的一个话题了。甚至去面试的时候，面试官都会将重点放在性能优化上。所以我把平时用到的一些优化方式用小笔笔记录下来，希望对你有所帮助。 一、HTML优化渲染顺序· 1、 CSS样式表置于头部，CSS会一边加载一边渲染。· 2、 JS脚本置于尾部，JS在未加载完成之前，会阻塞渲染· 3、 使用外部的样式表和脚本，优先加载出HTML结构 。· 4、 关键JS、CSS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端之性能优化">
+<meta property="og:url" content="https://shaobro.github.io/2021/03/30/%E5%89%8D%E7%AB%AF%E4%B9%8B%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="别林小筑">
+<meta property="og:description" content="前言关于前端代码性能优化，一直是老生常谈的一个话题了。甚至去面试的时候，面试官都会将重点放在性能优化上。所以我把平时用到的一些优化方式用小笔笔记录下来，希望对你有所帮助。 一、HTML优化渲染顺序· 1、 CSS样式表置于头部，CSS会一边加载一边渲染。· 2、 JS脚本置于尾部，JS在未加载完成之前，会阻塞渲染· 3、 使用外部的样式表和脚本，优先加载出HTML结构 。· 4、 关键JS、CSS">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-03-30T06:30:21.000Z">
+<meta property="article:modified_time" content="2021-03-30T07:40:28.765Z">
+<meta property="article:author" content="蓝眸">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://shaobro.github.io/2021/03/30/%E5%89%8D%E7%AB%AF%E4%B9%8B%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>前端之性能优化 | 别林小筑</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+
+    <header class="header header-view" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-cont"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">别林小筑</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">web前端</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-首页">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i><span>首页</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i><span>Tags</span></a>
+
+  </li>
+        <li class="menu-item menu-item-列表">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i><span>列表</span></a>
+
+  </li>
+        <li class="menu-item menu-item-关于博主">
+
+    <a href="/intro" rel="section"><i class="fa fa-archive fa-fw"></i><span>关于博主</span></a>
+
+  </li>
+        <li class="menu-item menu-item-友情链接">
+
+    <a href="/friend" rel="section"><i class="fa fa-archive fa-fw"></i><span>友情链接</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+<div class="header-weather">
+    <div class="header-weather-cont">
+       <iframe width="350" scrolling="no" height="70" frameborder="0" allowtransparency="true" src="https://i.tianqi.com?c=code&id=37&icon=4&site=12" style="color:#555;"></iframe>
+    </div>
+</div>
+<div class="header-author">
+    <div>
+    <img class="site-author-image" itemprop="image" alt="蓝眸"
+      src="/images/laji02.png">
+    </div>
+    
+  <div class="author-name">蓝眸</div>
+</div>
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://shaobro.github.io/2021/03/30/%E5%89%8D%E7%AB%AF%E4%B9%8B%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/laji02.png">
+      <meta itemprop="name" content="蓝眸">
+      <meta itemprop="description" content="各类技术博客五花八门,但大多数都会误导人。本网站只积累权威博客,坚持真理。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="别林小筑">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          前端之性能优化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-03-30 14:30:21 / Modified: 15:40:28" itemprop="dateCreated datePublished" datetime="2021-03-30T14:30:21+08:00">2021-03-30</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>关于前端代码性能优化，一直是老生常谈的一个话题了。甚至去面试的时候，面试官都会将重点放在性能优化上。所以我把平时用到的一些优化方式用小笔笔记录下来，希望对你有所帮助。</p>
+<h3 id="一、HTML优化"><a href="#一、HTML优化" class="headerlink" title="一、HTML优化"></a>一、HTML优化</h3><h4 id="渲染顺序"><a href="#渲染顺序" class="headerlink" title="渲染顺序"></a>渲染顺序</h4><p>· 1、 CSS样式表置于头部，CSS会一边加载一边渲染。<br>· 2、 JS脚本置于尾部，JS在未加载完成之前，会阻塞渲染<br>· 3、 使用外部的样式表和脚本，优先加载出HTML结构 。<br>· 4、 关键JS、CSS代码可以内嵌在HTML中，比如：rem动态等。<br>· 5、 避免使用iFrame。<br>· 6、 使用骨架屏。</p>
+<a id="more"></a>
+<h3 id="二、CSS优化"><a href="#二、CSS优化" class="headerlink" title="二、CSS优化"></a>二、CSS优化</h3><h4 id="加载优化"><a href="#加载优化" class="headerlink" title="加载优化"></a>加载优化</h4><p>· 1、  避免使用CSS@import。<br>· 2、  避免使用通配符。<br>· 3、  避免使用 !important。<br>· 4、  优化css reset,项目中不会用到这么多reset。<br>· 5、  避免使用CSS表达式。</p>
+<h4 id="动画优化"><a href="#动画优化" class="headerlink" title="动画优化"></a>动画优化</h4><p>· 1、 可以使用transform开启图形加速。<br>· 2、 用translate代替left，可以避免页面重排。</p>
+<h4 id="选择器优化"><a href="#选择器优化" class="headerlink" title="选择器优化"></a>选择器优化</h4><p>· 1、 选择器嵌套尽量不要超过三层。<br>· 2、 id选择器尽量不要嵌套。<br>· 3、 使用继承。</p>
+<h4 id="体积优化"><a href="#体积优化" class="headerlink" title="体积优化"></a>体积优化</h4><p>· 1、 提取公共css。</p>
+<h3 id="三、JS优化"><a href="#三、JS优化" class="headerlink" title="三、JS优化"></a>三、JS优化</h3><h4 id="运行速度"><a href="#运行速度" class="headerlink" title="运行速度"></a>运行速度</h4><p>· 1、 如果没有兼容问题，尽量使用原生方法。<br>· 2、 根据兼容浏览器的最低版本，考虑是否使用polyfill。<br>· 3、 switch语句相对if，可以较快通过将case语句按照最可能到最不可能的顺序进行组织。<br>· 4、 位运算较快，当进行数字运算时，位运算操作要比任何布尔运算或者算数运算更快。<br>· 5、 巧用 || 和 &amp;&amp; 布尔运算符，可以减少执行代码语句。<br>· 6、 使用加号拼接是最快的，其次是String()、toString()、new String()。<br>· 7、 需要使用定时器时，用setTimeOut()取代setInterval,setInterval会一直占用内存。<br>· 8、 制作JS动画时，使用requestAnimationFrame取代setTimeOut和setInterval()。</p>
+<h4 id="变量提升"><a href="#变量提升" class="headerlink" title="变量提升"></a>变量提升</h4><p>· 1、 避免全局查找，可以将需要访问的属性用变量保存。<br>· 2、 使用变量比使用对象属性和数组元素更快。<br>· 3、 对于包含大量数据而不需要操作的对象，可以使用Object.freeze冻结对象，加快运行速度。</p>
+<h4 id="减少无用操作"><a href="#减少无用操作" class="headerlink" title="减少无用操作"></a>减少无用操作</h4><p>· 1、 使用节流、防抖。<br>· 2、 使用事件委托取代大量的事件绑定。<br>· 3、 若需要对DOM进行大量操作，可以使用Fragment减少操作次数。</p>
+<h4 id="减少未使用代码"><a href="#减少未使用代码" class="headerlink" title="减少未使用代码"></a>减少未使用代码</h4><p>· 1、 进行tree-shaking，删减未使用的代码。</p>
+<h4 id="算法优化"><a href="#算法优化" class="headerlink" title="算法优化"></a>算法优化</h4><p>· 1、 添加key值，最大效益地使用虚拟DOM，减少Diff时间。<br>· 2、 使用benchmark测试不同算法的性能，择优。</p>
+<h3 id="四、网络优化"><a href="#四、网络优化" class="headerlink" title="四、网络优化"></a>四、网络优化</h3><h4 id="请求数量上限"><a href="#请求数量上限" class="headerlink" title="请求数量上限"></a>请求数量上限</h4><p>· 1、 每个网站最多允许同时6个请求，可以考虑将资源分类部署。</p>
+<h4 id="请求速度优化"><a href="#请求速度优化" class="headerlink" title="请求速度优化"></a>请求速度优化</h4><p>· 1、 使用CDN，可以加速资源的请求。</p>
+<h4 id="加载时间分配"><a href="#加载时间分配" class="headerlink" title="加载时间分配"></a>加载时间分配</h4><p>· 1、 核心资源预加载。<br>· 2、 大体积资源按需加载（Webpack拆包）。</p>
+<h4 id="减少加载体积"><a href="#减少加载体积" class="headerlink" title="减少加载体积"></a>减少加载体积</h4><p>· 1、 压缩图片。<br>· 2、 压缩HTML、CSS、JS代码。<br>· 3、 开启网络压缩，如：GZIP。</p>
+<h4 id="减少加载次数"><a href="#减少加载次数" class="headerlink" title="减少加载次数"></a>减少加载次数</h4><p>· 1、 制作精灵图。<br>· 2、 将小图片转换成base64字符串。<br>· 3、 使用浏览器缓存。<br>· 4、 使用前端缓存，如LocaStorage、Cookie、SessionStorage等。<br>· 5、 减少重定向请求，比如：Nginx反向代理的重定向。<br>· 6、 避免使用服务端字体。</p>
+
+    </div>
+    
+    <div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束&nbsp;<i class="fa fa-paw"></i>&nbsp;感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+    
+    
+    
+        <div class="reward-container">
+  <div>请我吃包辣条吧~</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/weixin.png" alt="蓝眸 微信">
+        <p>微信</p>
+      </div>
+      <div style="display: inline-block;">
+        <img src="/images/zfb.png" alt="蓝眸 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/04/%E6%B5%85%E8%B0%88ES6-%E7%AC%AC%E4%BA%8C%E7%AF%87/" rel="prev" title="浅谈ES6-第二篇">
+      <i class="fa fa-chevron-left"></i> 浅谈ES6-第二篇
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81HTML%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">一、HTML优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.1.1.</span> <span class="nav-text">渲染顺序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81CSS%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">二、CSS优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.1.</span> <span class="nav-text">加载优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A8%E7%94%BB%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.2.</span> <span class="nav-text">动画优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%99%A8%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.3.</span> <span class="nav-text">选择器优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%93%E7%A7%AF%E4%BC%98%E5%8C%96"><span class="nav-number">1.2.4.</span> <span class="nav-text">体积优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81JS%E4%BC%98%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">三、JS优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E9%80%9F%E5%BA%A6"><span class="nav-number">1.3.1.</span> <span class="nav-text">运行速度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87"><span class="nav-number">1.3.2.</span> <span class="nav-text">变量提升</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E6%97%A0%E7%94%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">1.3.3.</span> <span class="nav-text">减少无用操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E6%9C%AA%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%A0%81"><span class="nav-number">1.3.4.</span> <span class="nav-text">减少未使用代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E4%BC%98%E5%8C%96"><span class="nav-number">1.3.5.</span> <span class="nav-text">算法优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96"><span class="nav-number">1.4.</span> <span class="nav-text">四、网络优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E6%95%B0%E9%87%8F%E4%B8%8A%E9%99%90"><span class="nav-number">1.4.1.</span> <span class="nav-text">请求数量上限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E9%80%9F%E5%BA%A6%E4%BC%98%E5%8C%96"><span class="nav-number">1.4.2.</span> <span class="nav-text">请求速度优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%97%B6%E9%97%B4%E5%88%86%E9%85%8D"><span class="nav-number">1.4.3.</span> <span class="nav-text">加载时间分配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E5%8A%A0%E8%BD%BD%E4%BD%93%E7%A7%AF"><span class="nav-number">1.4.4.</span> <span class="nav-text">减少加载体积</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E5%8A%A0%E8%BD%BD%E6%AC%A1%E6%95%B0"><span class="nav-number">1.4.5.</span> <span class="nav-text">减少加载次数</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="蓝眸"
+      src="/images/laji02.png">
+  <img src="../images/author_name.png" />
+  <div class="site-description" itemprop="description">各类技术博客五花八门,但大多数都会误导人。本网站只积累权威博客,坚持真理。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蓝眸</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+ <canvas id="canvas"></canvas>
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+  <script src="../js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript">
+    var windowWidth = $(window).width();
+  if (windowWidth > 480) {
+    document.write('<script type="text/javascript" src="../js/snow.js"><\/script>');
+  }
+</script>
+<script src="/live2d-widget/autoload.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-wanko"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
